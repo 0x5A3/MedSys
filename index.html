@@ -7,5 +7,36 @@
 <body>
   <title> CS Project </title>
 
+  <script>
+    const makeRequest = (method, url, data) => {
+      return new Promise(
+        (resolve, reject) => {
+          let XHR = new XMLHttpRequest();
+
+          XHR.open(method, url);
+          XHR.responseType = "json";
+
+          if(data){ 
+            XHR.setRequestHeader("Content-Type", "application/json");
+          }
+
+          XHR.onload = () => { 
+            if(XHR.status >= 400){
+              reject("Load failed!");
+            }
+            else{
+              resolve(XHR.response);
+            }
+          };
+          XHR.onerror = () => { reject("Something went wrong!"); };
+          XHR.send(JSON.stringify(data));
+        }
+      )
+    }
+
+    makeRequest("GET", "get");
+    makeRequest("POST", "send", { data: "Hello server!"});
+  </script>
+
 </body>
 </html>
