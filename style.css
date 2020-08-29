@@ -1,0 +1,138 @@
+:root {
+    --bg-color: white;
+    --highlight: #8800FF;
+    --border: #AAAAAA;
+}
+
+html {
+    font-family: 'Noto Sans', sans-serif;
+}
+* {
+    transition: 0.2s;
+}
+
+.card {
+    display: flex;
+    flex-flow: column nowrap;
+ 
+    align-items: center;
+    justify-content: space-evenly;
+
+    padding: 50px 30px 50px 30px;
+    box-shadow: 0px 1px 2px 2px var(--border);
+}
+
+.login {
+    width: calc(min(90%, 350px));
+}
+.result {
+    max-height: 40px;
+    width: 70%;
+
+    margin: 5px;
+}
+.cart_result {
+    height: 100%;
+    width: 90%;
+}
+
+::selection {
+    background: var(--highlight);
+    color: var(--bg-color);
+}
+header {
+    text-align: center;
+    margin: 10%;
+    font-size: 150%
+}
+input {
+    border: none;
+    border-radius: 4px;
+    background: var(--bg-color);
+}
+
+.button {
+    margin: 5px;
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    background: var(--highlight);
+    color: var(--bg-color);
+}
+.button:hover {
+    background: var(--highlight);
+    box-shadow: 0px 1px 2px 2px var(--border);
+}
+.button.text {
+    padding: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+
+    background: var(--bg-color);
+    color: var(--highlight);
+}
+.button.text:hover {
+    box-shadow: none;
+    text-decoration: underline;
+}
+
+.form {
+    width: 80%;
+    position: relative;
+    padding: 10px;
+}
+.form input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 4%;
+    border: 2px solid var(--border);
+}
+.form input:hover {
+    border: 2px solid var(--highlight);
+}
+.form div {
+    vertical-align: text-top;
+
+    font-size: 75%;
+    position: absolute;
+    top: 0px;
+    left: 5%;
+    padding: 3px;
+    background: var(--bg-color);
+}
+.form span {
+    font-size: 75%;
+    color: red;
+}
+
+.item {
+    width: 80%;
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0px 1px 2px 2px var(--border);
+}
+.item * {
+    margin: 5px;
+}
+input[type=number] {
+    padding: 8px;
+    width: 100px;
+
+    border: 2px solid var(--highlight);
+    text-align: center;
+    content: "HI";
+}
+
+.item .name {
+    font-size: 120%;
+}
+.item .desc {
+    padding-left: 20px;
+}
+.item .select {
+    text-align: right;
+}
+.item .select * {
+    margin-left: 20px;
+}

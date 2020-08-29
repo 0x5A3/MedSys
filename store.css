@@ -1,0 +1,27 @@
+html, body{
+    margin: 0;
+    padding: 0;
+}
+body {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+#banner {
+    background: var(--bg-color);
+    box-shadow: 0px 1px 2px 2px var(--border);
+
+    position: sticky;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 150%
+}
+#banner > .form {
+    width: 65%;
+    display: inline-block;
+}
