@@ -110,7 +110,7 @@ def register(state):
     if user:
         return Error("user already exists")
 
-    fields = {
+    field_names = {
         "username": ("Username", lambda x: None), 
         "password": ("Password", lambda x: None),
         "email": ("Email", lambda x: None),
