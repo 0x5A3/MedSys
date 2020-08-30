@@ -133,13 +133,13 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         print(f"-- [{code}] {msg}")
 
 
-import sys
+import platform
 
 def run_server(PORT=8040):
     with http.server.HTTPServer(("localhost", PORT), RequestHandler) as server:
         print(f"Starting server on {PORT}")
 
-        if sys.platform == "windows":
+        if platform.system() == "Windows":
             path = f"http://localhost:{PORT}"
         else:
             path = f"localhost:{PORT}"

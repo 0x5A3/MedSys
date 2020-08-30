@@ -8,6 +8,14 @@ let password_match = () => {
         confirm.childNodes[2].innerHTML = "error passwords dont match";
     }
 }
+
+let set_check = (node, fn) =>
+    node.childNodes[1].oninput = () => {
+        const [value, error] = fn(node.childNodes[1].value);
+        node.childNodes[2].innerHTML = error;
+        node.childNodes[1].value = output
+    };
+
 password.childNodes[1].oninput = password_match
 confirm.childNodes[1].oninput = password_match;
 
