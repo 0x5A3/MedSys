@@ -77,14 +77,14 @@ class Item:
             else:
                 raise Exception(f"Attribute missing {attr}")
 
-    def to_html(self, button, n, checkout):
+    def to_html(self, button, n, checkout, disabled = False):
         return HTML.div([
             HTML.div([self.name], {"class": "name"}),
             HTML.div([self.desc], {"class": "desc"}),
 
             HTML.div([
                 HTML.span([f"{self.price} AED"]),
-                HTML.leaf("input", {
+                HTML.leaf("input" + (" disabled" if disabled else ""), {
                     "type": "number", "class": "number",
                     "value": str(n), "min": "0", "max": str(self.stock),
                     "oninput": f"add_item_quantity(this, {self.item_id}, {checkout})"
@@ -97,7 +97,7 @@ class Item:
 
     def cart_add(self):
         return self.to_html(
-            HTML.button("Add to cart", f"add_item(this, {self.item_id})"), 0, "false")
+            HTML.button("Add to cart", f"add_item(this, {self.item_id})"), 0, "false", True)
 
     def cart_remove(self, n):
         return self.to_html(

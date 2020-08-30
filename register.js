@@ -26,7 +26,7 @@ const register = () => {
                     confirm.childNodes[2].innerHTML = data.reason;
                 }
                 else{
-                    //goto("login");
+                    goto("login");
                 }
             }
         )

@@ -29,3 +29,11 @@ const request = (method, url, data, respond) => {
     }
     XHR.send(JSON.stringify(data));
 };
+
+const user_upload = (method, data, update) =>
+    request("POST", method, { username: username, ...data },
+        data => {
+            if(data.success){ update(); }
+            else{ alert("Error: ", data.reason); }
+        }
+    );

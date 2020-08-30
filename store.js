@@ -1,92 +1,63 @@
 let cart = {};
 
+const item_updater = (update, checkout) => () => {
+    update();
+    if(checkout){ goto_checkout(); }
+};
+
 const add_item_quantity = (elem, id, checkout) => {
+    if(elem.value.length > 0){
+        let [v, _min, _max] = [parseInt(elem.value), 
+            elem.getAttribute("min"), 
+            elem.getAttribute("max")
+        ];
+
+        if(v < _min){ v = _min; }
+        else if(v > _max){ v = _max; } 
+        elem.value = v;    
+    }
+    else {
+        elem.value = 0;
+    }
     add_item(elem.nextSibling, id, checkout);
 }
-const add_item = (elem, id, checkout = false) => {
-    request("POST", "/$cart_add", 
+    
+const add_item = (elem, id, checkout = false) =>
+    user_upload("/$cart_add", 
         { 
-            "username": username,
-            "item_id": id,
-            "quantity": elem.previousSibling.value
+            item_id: id,
+            quantity: elem.previousSibling.value
         },
-        data => {
-            if(data.success){
-                elem.value = "Remove";
-                elem.onclick = () => remove_item(elem, id, checkout);  
-                
-                if(checkout){
-                    goto_checkout();
-                }
-            }
-            else{
-                alert(data.reason);
-            }
-        }     
-    );
-};
-const remove_item = (elem, id, checkout = false) => {
-    request("POST", "/$cart_remove", 
-        { 
-            "username": username,
-            "item_id": id 
-        },
-        data => {
-            if(data.success){
-                elem.previousSibling.value = 0;
-                elem.value = "Add to cart";
-                elem.onclick = () => add_item(elem, id, checkout);
+        item_updater(() => { 
+            elem.previousSibling.disabled = false;
 
-                if(checkout){
-                    goto_checkout();
-                }
-            }
-            else{
-                alert(data.reason);
-            }
-        }     
+            elem.value = "Remove"; 
+            elem.onclick = () => remove_item(elem, id, checkout)
+        })    
     );
-};
-const checkout_remove = (elem, id) => {
-    request("POST", "/$cart_remove", 
-        { 
-            "username": username,
-            "item_id": id 
-        },
-        data => {
-            if(data.success){
-                goto_checkout();
-            }
-            else{
-                alert(data.reason);
-            }
-        }     
+
+const remove_item = (elem, id, checkout = false) =>
+    user_upload("/$cart_remove", { item_id: id },
+        item_updater(() => {
+            elem.previousSibling.value = 0;
+            elem.previousSibling.disabled = true;
+            
+            elem.value = "Add to cart";
+            elem.onclick = () => add_item(elem, id, checkout);
+        })
     );
-};
-const purchase = () => {
-    request("POST", "/$purchase", 
-        { 
-            username: username,
-            address: input_get($("#address"))
-        },         
-        data => {
-            if(data.success){
-                goto_store();
-            }
-            else{
-                alert(data.reason);
-            }
-        }     
-    );
-}
+
+const checkout_remove = (elem, id) =>
+    user_upload("/$cart_remove", 
+        { item_id: id }, goto_checkout);
+
+const purchase = () =>
+    user_upload("/$purchase", 
+        { address: input_get($("#address")) }, goto_store);
 
 const search = elem => {
-    if(event.key == "Enter"){
-        const query = elem.value;
-
-        goto(`${query}`);
-    }
+    if(event.key == "Enter"){ goto(`${elem.value}`); }
 };
 
-const goto_store = () => { goto(`/store/${username}/`); }
-const goto_checkout = () => { goto(`/checkout/${username}`); }
+const goto_store = () => { goto(`/store/${username}/`); };
+const goto_checkout = () => { goto(`/checkout/${username}`); };
