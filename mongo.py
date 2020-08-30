@@ -47,48 +47,6 @@ def name_checker(name, type_name):
             return "Name cannot contain characters other than the letters!"
 
 
-def password_checker(password):
-    upper_case = special_characters = numbers = 0
-    if password[0].isspace() or password[-1].isspace():
-        return "Password cannot start or end with a whitespace!"
-    else:
-        for character in password:
-            if character.isalpha():
-                if character.isupper():
-                    upper_case += 1
-                else:
-                    pass
-            elif character.isdigit():
-                numbers += 1
-            elif character.isspace():
-                pass
-            else:
-                special_characters += 1
-        length = len(password)
-
-        error_list = []
-        if length < 7:
-            error_list.append("7 characters")
-        if upper_case < 1:
-            error_list.append("1 Upper Case")
-        if numbers < 1:
-            error_list.append("1 Number")
-        if special_characters < 1:
-            error_list.append("1 Special Character")
-
-        error_length = len(error_list)
-        if error_length == 0:
-            return "Perfect Password!"
-        else:
-            error_message = "Password needs to have atleast "
-            for i in range(error_length):
-                if i != (error_length - 1):
-                    error_message += f'{error_list[i]}, '
-                elif i == 0:
-                    error_message += f'{error_list[i]}!'
-                else:
-                    error_message += f'and {error_list[i]}!'
-            return error_message
 
 
 def register_account(username, first_name, last_name, password, email_id, billing_address):

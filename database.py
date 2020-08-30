@@ -42,14 +42,95 @@ def Ok():
     return Result(True, "")
 
 
+def password_checker(password):
+    upper_case = special_characters = numbers = 0
+    
+    if password[0].isspace() or password[-1].isspace():
+        return "Password cannot start or end with a whitespace!"
+    else:
+        for character in password:
+            if character.isalpha():
+                if character.isupper():
+                    upper_case += 1
+                else:
+                    pass
+            elif character.isdigit():
+                numbers += 1
+            elif character.isspace():
+                pass
+            else:
+                special_characters += 1
+        length = len(password)
+
+        error_list = []
+        if length < 7:
+            error_list.append("7 characters")
+        if upper_case < 1:
+            error_list.append("1 Upper Case")
+        if numbers < 1:
+            error_list.append("1 Number")
+        if special_characters < 1:
+            error_list.append("1 Special Character")
+
+        error_length = len(error_list)
+        if error_length == 0:
+            return None
+        else:
+            error_message = "Password needs to have atleast "
+            for i in range(error_length):
+                if i != (error_length - 1):
+                    error_message += f'{error_list[i]}, '
+                elif i == 0:
+                    error_message += f'{error_list[i]}!'
+                else:
+                    error_message += f'and {error_list[i]}!'
+            return error_message
+
+def name_checker(name, name_type):
+    if len(name.split()) != 1:
+        msg = f"{name_type}: Enter one word only!"
+    else:
+        if name[0].isspace() or name[-1].isspace():
+            msg = f"{name_type}: Cannot begin or end with whitespace!"
+        elif name.isalpha():
+            if name[0].isupper():
+                if len(name) == 1 or name[1:].islower():
+                    msg = None
+                else:
+                    msg = f"{name_type}: Only first letter should be capitalized!"
+            else:
+                msg = f"{name_type}: First letter should be capitalized!"
+        else:
+            msg = f"{name_type}: Cannot contain special characters"
+    return msg
+
 def register(state):
     user = db_users.find_one({"username": state["username"]})
 
     if user:
         return Error("user already exists")
-    for field in ["username", "password", "email"]:
-        if field not in state or not state[field]:
-            return Error(f"{field} required")
+
+    fields = {
+        "username": ("Username", lambda x: None), 
+        "password": ("Password", lambda x: None),
+        "email": ("Email", lambda x: None),
+
+        "name_first": ("First Name", name_checker),
+        "name_last": ("Last Name", name_checker)
+    }
+    for field_key in field_names:
+        field_name, field_checker = field_names[field_key]
+
+        if field_key not in state or not state[field_key]:
+            return Error(f"{field_names[field]} required")
+
+        msg = field_checker(state[field_key], field_names[field_key])
+        if msg is not None:
+            return Error(msg)
+
+    msg = password_checker(state["password"])
+    if msg is not None:
+        return Error(msg)
 
     state["cart"] = {}
     db_users.insert_one(state)

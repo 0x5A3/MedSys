@@ -29,6 +29,9 @@ def page_login(arg):
         css=["style.css", "login.css"]
     )
 
+#check password if it's strong enough
+#valid Name
+#username is valid
 
 def page_register(arg):
     return HTML.page("MedSys Register", [
@@ -36,10 +39,11 @@ def page_register(arg):
             HTML.subtitle("MedSys"),
             HTML.title("Register"),
 
-            HTML.text_input("Username",
-                            div_id="username"),
-            HTML.text_input("Email",
-                            div_id="email"),
+            HTML.text_input("Username", div_id="username"),
+            HTML.text_input("First Name", div_id="name_first"),
+            HTML.text_input("Last Name", div_id="name_last"),
+            
+            HTML.text_input("Email", div_id="email"),
 
             HTML.text_input("Password",
                             div_id="password", in_type="password"),
@@ -129,11 +133,18 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         print(f"-- [{code}] {msg}")
 
 
+import sys
+
 def run_server(PORT=8040):
     with http.server.HTTPServer(("localhost", PORT), RequestHandler) as server:
         print(f"Starting server on {PORT}")
 
-        webbrowser.open(f"localhost:{PORT}")
+        if sys.platform == "windows":
+            path = f"http://localhost:{PORT}"
+        else:
+            path = f"localhost:{PORT}"
+    
+        webbrowser.open(path)
         try:
             server.serve_forever()
         except KeyboardInterrupt:
