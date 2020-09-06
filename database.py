@@ -1,50 +1,121 @@
 import HTML
-from mongo import MongoClient
+from pymongo import MongoClient
 
-client = MongoClient()
 
-db = client.online_pharmacy
+def start():
+    global db
+    global db_users
+    global db_items
+    global db_transactions
 
-db_users = db.users
-db_items = db.items
-db_transactions = db.transactions
+    client = MongoClient()
 
-db_users.insert_one({
-    "username": "a",
-    "password": "a",
-    "email": "root@gmail.com",
-    "cart": {}
-})
-db_items.insert_one({
-    "item_id": 32,
-    "name": "Patanjali hair OILE",
-    "desc": "Cures Cancer",
-    "price": 105,
-    "stock": 69
-})
-db_items.insert_one({
-    "item_id": 512000132,
-    "name": "Ibuprofen",
-    "desc": "RS-2-(4-(2-methylpropyl)phenyl)propanoic acid",
-    "price": 20,
-    "stock": 30
-})
+    db = client.online_pharmacy
+    db.items.remove()
+    db_users = db.users
+    db_items = db.items
+    db_transactions = db.transactions
 
+    db_users.insert_one({
+        "username": "a",
+        "password": "a",
+        "name_first": "Alex",
+        "name_first": "Anderson",
+        "email": "root@gmail.com",
+        "cart": {}
+    })
+    db_items.insert_one({
+        "item_id": 32,
+        "name": "Patanjali hair OILE",
+        "desc": "Cures Cancer",
+        "price": 105,
+        "stock": 69
+    })
+    db_items.insert_one({
+        "item_id": 512000132,
+        "name": "Ibuprofen",
+        "desc": "RS-2-(4-(2-methylpropyl)phenyl)propanoic acid",
+        "price": 20,
+        "stock": 30
+    })
+
+
+def quit():
+    pymongo.quit()
 
 
 def Result(success, reason):
     return {"success": success, "reason": reason}
+
+
 def Error(reason):
     return Result(False, reason)
+
+
 def ServerError():
     return Error("Internal Server Error")
+
+
 def Ok():
-    return Result(True, "")
+    return Result(True, "success")
 
 
-def password_checker(password):
+def username_checker(username, field_name):
+    if len(username) > 15:
+        return f"{field_name} cannot be more than 15 characters!"
+
+    if username[0].isdigit():
+        return f"{field_name} should start with a letter or an underscore"
+    # no capital letters
+    for i in username:
+        if i.isalpha:
+            return None
+    else:
+        return f"{field_name} should contain atleast 1 letter!"
+
+
+def name_checker(name, field_name):
+    if len(name) > 15:
+        return f"{field_name}: cannot be more than 10 characters!"
+
+    if name[0].isupper():
+        if len(name) == 1 or name[1:].islower():
+            msg = None
+        else:
+            msg = f"{field_name}: Only first letter should be capitalized!"
+    else:
+        msg = f"{field_name}: First letter should be capitalized!"
+
+    return msg
+
+def email_checker(email, field_name):
+    if email[0].isalpha() == False:
+        return f"{field_name} should start with a letter!"
+
+    if email.count("@") != 1:
+        return f"{field_name} should contain exactly one '@'!"
+
+    for i in '.@':
+        index = 0
+        old_index = None
+        while old_index != index:
+            old_index = index
+            index = old_index + email[old_index:].find(i)
+            #print(old_index, index)
+            try:
+                if email[index + 1] in '.@':
+                    return f"{field_name} cannot use special characters next to each other!"
+
+            except:
+                return f"Cannot end {field_name} with '.' or '@'!"
+
+    second_part = email.split('@')[-1]
+    if second_part.count('.') != 1:
+        return f"Enter valid domain in {field_name}!"
+
+def password_checker(password, field_name):
     upper_case = special_characters = numbers = 0
-    
+
     if password[0].isspace() or password[-1].isspace():
         return "Password cannot start or end with a whitespace!"
     else:
@@ -76,7 +147,7 @@ def password_checker(password):
         if error_length == 0:
             return None
         else:
-            error_message = "Password needs to have atleast "
+            error_message = f"{field_name} needs to have atleast "
             for i in range(error_length):
                 if i != (error_length - 1):
                     error_message += f'{error_list[i]}, '
@@ -86,55 +157,48 @@ def password_checker(password):
                     error_message += f'and {error_list[i]}!'
             return error_message
 
-def name_checker(name, name_type):
-    if len(name.split()) != 1:
-        msg = f"{name_type}: Enter one word only!"
-    else:
-        if name[0].isspace() or name[-1].isspace():
-            msg = f"{name_type}: Cannot begin or end with whitespace!"
-        elif name.isalpha():
-            if name[0].isupper():
-                if len(name) == 1 or name[1:].islower():
-                    msg = None
-                else:
-                    msg = f"{name_type}: Only first letter should be capitalized!"
-            else:
-                msg = f"{name_type}: First letter should be capitalized!"
-        else:
-            msg = f"{name_type}: Cannot contain special characters"
-    return msg
 
 def register(state):
     user = db_users.find_one({"username": state["username"]})
 
+    def FieldError(msg, div_id):
+        return {
+            "success": False,
+            "reason": msg,
+            "div_id": div_id
+        }
+
     if user:
-        return Error("user already exists")
+        return FieldError("user already exists", "username")
 
     field_names = {
-        "username": ("Username", lambda x: None), 
-        "password": ("Password", lambda x: None),
-        "email": ("Email", lambda x: None),
+        "username": ("Username", username_checker),
 
-        "name_first": ("First Name", name_checker),
-        "name_last": ("Last Name", name_checker)
+        "name_first": ("First name", name_checker),
+        "name_last": ("Last name", name_checker),
+
+        "email": ("Email", email_checker),
+
+        "password": ("Password", password_checker),
     }
     for field_key in field_names:
         field_name, field_checker = field_names[field_key]
 
         if field_key not in state or not state[field_key]:
-            return Error(f"{field_names[field]} required")
+            return FieldError(f"{field_name} required", field_key)
 
-        msg = field_checker(state[field_key], field_names[field_key])
+        msg = field_checker(state[field_key], field_name)
         if msg is not None:
-            return Error(msg)
-
-    msg = password_checker(state["password"])
-    if msg is not None:
-        return Error(msg)
+            return FieldError(msg, field_key)
 
     state["cart"] = {}
     db_users.insert_one(state)
     return Ok()
+
+
+def get_names(username):
+    user = db_users.find_one({"username": username})
+    return user["name_first"], user["name_last"]
 
 
 def login(state):
@@ -158,7 +222,7 @@ class Item:
             else:
                 raise Exception(f"Attribute missing {attr}")
 
-    def to_html(self, button, n, checkout, disabled = False):
+    def to_html(self, button, n, checkout, disabled=False):
         return HTML.div([
             HTML.div([self.name], {"class": "name"}),
             HTML.div([self.desc], {"class": "desc"}),
@@ -167,7 +231,7 @@ class Item:
                 HTML.span([f"{self.price} AED"]),
                 HTML.leaf("input" + (" disabled" if disabled else ""), {
                     "type": "number", "class": "number",
-                    "value": str(n), "min": "0", "max": str(self.stock),
+                    "value": str(n), "min": "1", "max": str(self.stock),
                     "oninput": f"add_item_quantity(this, {self.item_id}, {checkout})"
                 }), button],
                 {"class": "select"}
@@ -193,10 +257,10 @@ def search(username, query):
 
     matches = db_items.find({
         "name": {"$regex": query, "$options": "i"},
-        "stock": {"$gt": 0 }
+        "stock": {"$gt": 0}
     })
 
-    user = db_users.find_one({ "username": username })
+    user = db_users.find_one({"username": username})
     if not user:
         return []
 
@@ -214,7 +278,7 @@ def search(username, query):
     return results
 
 def checkout(username):
-    user = db_users.find_one({ "username": username })
+    user = db_users.find_one({"username": username})
 
     if not user:
         return ServerError()
@@ -223,28 +287,28 @@ def checkout(username):
 
     cart, results = user["cart"], []
     for item_id in cart:
-        item = db_items.find_one({ "item_id": int(item_id) })
+        item = db_items.find_one({"item_id": int(item_id)})
         price += int(item["price"]) * int(cart[item_id])
 
         if not item:
-            continue 
+            continue
 
         results += [Item(item).checkout_remove(cart[item_id])]
     return results + [HTML.div(f"Price: {price} AED")]
-    
+
 
 def __cart_update(username, cart):
     db_users.update_one(
-        { "username": username },
-        { "$set": { "cart": cart } }
+        {"username": username},
+        {"$set": {"cart": cart}}
     )
 
 def cart_add(state):
     try:
         username, item_id, n = state["username"], state["item_id"], state["quantity"]
 
-        item = db_items.find_one({ "item_id": item_id })
-        user = db_users.find_one({ "username": username })
+        item = db_items.find_one({"item_id": item_id})
+        user = db_users.find_one({"username": username})
 
         if not item or not username:
             return ServerError()
@@ -253,7 +317,7 @@ def cart_add(state):
         cart[str(item_id)] = int(n)
         __cart_update(username, cart)
 
-        user = db_users.find_one({ "username": username })
+        user = db_users.find_one({"username": username})
 
         return Ok()
     except Exception as ex:
@@ -265,9 +329,9 @@ def cart_remove(state):
     try:
         username, item_id = state["username"], state["item_id"]
 
-        item = db_items.find_one({ "item_id": item_id })
-        user = db_users.find_one({ "username": username })
-        
+        item = db_items.find_one({"item_id": item_id})
+        user = db_users.find_one({"username": username})
+
         if not item or not user:
             return ServerError()
 
@@ -276,10 +340,10 @@ def cart_remove(state):
             del cart[str(item_id)]
         except:
             pass
-        
+
         __cart_update(username, cart)
 
-        user = db_users.find_one({ "username": username })
+        user = db_users.find_one({"username": username})
 
         return Ok()
     except Exception as ex:
@@ -289,7 +353,7 @@ def cart_remove(state):
 def purchase(state):
     try:
         username = state["username"]
-        user = db_users.find_one({ "username": username })
+        user = db_users.find_one({"username": username})
 
         print(user)
         if not user:
@@ -299,9 +363,9 @@ def purchase(state):
 
         for item_id in cart:
             print(item_id, cart[item_id], type(cart[item_id]))
-            item_verify = db_items.find_one({ 
-                "item_id": int(item_id), 
-                "stock": { "$gte": cart[item_id] }
+            item_verify = db_items.find_one({
+                "item_id": int(item_id),
+                "stock": {"$gte": cart[item_id]}
             })
             print(item_verify)
             if not item_verify:
@@ -309,10 +373,10 @@ def purchase(state):
 
         for item_id in cart:
             db_items.update_one(
-                { "item_id": int(item_id) },
-                { "$inc": { "stock": -cart[item_id] }}
+                {"item_id": int(item_id)},
+                {"$inc": {"stock": -cart[item_id]}}
             )
-        
+
         import datetime
         transaction = {
             "username": username,

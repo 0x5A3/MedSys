@@ -5,7 +5,7 @@ const item_updater = (update, checkout) => () => {
     if(checkout){ goto_checkout(); }
 };
 
-const add_item_quantity = (elem, id, checkout) => {
+const check_quantity = elem => {
     if(elem.value.length > 0){
         let [v, _min, _max] = [parseInt(elem.value), 
             elem.getAttribute("min"), 
@@ -17,12 +17,14 @@ const add_item_quantity = (elem, id, checkout) => {
         elem.value = v;    
     }
     else {
-        elem.value = 0;
+        elem.value = 1;
     }
-    add_item(elem.nextSibling, id, checkout);
 }
+const add_item_quantity = (elem, id, checkout) => 
+    add_item(elem.nextSibling, id, checkout);
     
-const add_item = (elem, id, checkout = false) =>
+const add_item = (elem, id, checkout = false) => {
+    check_quantity(elem.previousSibling);
     user_upload("/$cart_add", 
         { 
             item_id: id,
@@ -35,6 +37,7 @@ const add_item = (elem, id, checkout = false) =>
             elem.onclick = () => remove_item(elem, id, checkout)
         })    
     );
+}
 
 const remove_item = (elem, id, checkout = false) =>
     user_upload("/$cart_remove", { item_id: id },

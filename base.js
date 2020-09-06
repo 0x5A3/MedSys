@@ -13,7 +13,9 @@ const request = (method, url, data, respond) => {
 
     XHR.onload = () => {
         if(XHR.status < 400){
-            respond(XHR.response); 
+            let data = XHR.response;
+            console.log("RECIEVED ", data)
+            respond(data); 
         }
         else{
             goto("error");
@@ -24,7 +26,7 @@ const request = (method, url, data, respond) => {
     XHR.open(method, url);
     XHR.responseType = "json";
     if (data){
-        console.log(data);
+        console.log("SENDING", data);
         XHR.setRequestHeader("Content-Type", "application/json");
     }
     XHR.send(JSON.stringify(data));

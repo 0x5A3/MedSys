@@ -1,6 +1,10 @@
 import HTML
 import database as DB
 
+def profile_icon(username, onclick="goto('account')"):
+    first_name, last_name = DB.get_names(username)
+    profile = f"{first_name[0]}{last_name[0]}"
+    return HTML.button(profile, onclick=onclick, style="button profile")
 
 def page_store(arg):
     if len(arg) != 2:
@@ -17,6 +21,7 @@ def page_store(arg):
         HTML.node("script", f'let username = "{username}";'),
         HTML.node("div", [
             HTML.subtitle("MedSys Store"),
+            profile_icon(username),
             HTML.text_input("Search",
                             div_id="search",
                             onkeydown="search(this)",
@@ -45,6 +50,7 @@ def page_checkout(arg):
         HTML.node("div", [
 
             HTML.subtitle("Checkout"),
+            profile_icon(username),
 
             HTML.text_input("Billing Address", div_id="address"),
             HTML.button("Purchase", onclick=f"purchase()"),
@@ -54,3 +60,6 @@ def page_checkout(arg):
         scripts=["base.js", "store.js", "checkout.js"],
         css=["style.css", "store.css"]
     )
+
+def page_history():
+    pass

@@ -1,3 +1,4 @@
+import platform
 import database as DB
 import webbrowser
 import http.server
@@ -5,6 +6,7 @@ import HTML
 import json
 import server
 import store
+import account
 
 
 def page_login(arg):
@@ -29,9 +31,6 @@ def page_login(arg):
         css=["style.css", "login.css"]
     )
 
-#check password if it's strong enough
-#valid Name
-#username is valid
 
 def page_register(arg):
     return HTML.page("MedSys Register", [
@@ -42,7 +41,7 @@ def page_register(arg):
             HTML.text_input("Username", div_id="username"),
             HTML.text_input("First Name", div_id="name_first"),
             HTML.text_input("Last Name", div_id="name_last"),
-            
+
             HTML.text_input("Email", div_id="email"),
 
             HTML.text_input("Password",
@@ -61,6 +60,7 @@ def page_register(arg):
     )
 
 
+
 def page_error(code, msg):
     return HTML.page("MedSys Error", [
         HTML.card([
@@ -77,8 +77,12 @@ def page_generic_error(arg):
 page_maker = {
     "login": page_login,
     "register": page_register,
+
     "store": store.page_store,
     "checkout": store.page_checkout,
+    "history": store.page_history,
+    
+    "account": account.page_profile,
     "error": page_generic_error,
 }
 
@@ -107,8 +111,10 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
 
     def json_apply(self, action):
         def apply(data):
-            self.respond(201, "application/json",
-                         json.dumps(action(json.loads(data))).encode())
+            print("RECEIVED", data)
+            data = json.dumps(action(json.loads(data))).encode()
+            print("SENDING", data)
+            self.respond(201, "application/json", data)
         return apply
 
     def do_POST(self):
@@ -133,8 +139,6 @@ class RequestHandler(http.server.BaseHTTPRequestHandler):
         print(f"-- [{code}] {msg}")
 
 
-import platform
-
 def run_server(PORT=8040):
     with http.server.HTTPServer(("localhost", PORT), RequestHandler) as server:
         print(f"Starting server on {PORT}")
@@ -143,7 +147,7 @@ def run_server(PORT=8040):
             path = f"http://localhost:{PORT}"
         else:
             path = f"localhost:{PORT}"
-    
+
         webbrowser.open(path)
         try:
             server.serve_forever()
