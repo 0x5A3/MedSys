@@ -11,7 +11,6 @@ def start():
     client = MongoClient()
 
     db = client.online_pharmacy
-    db.items.remove()
     db_users = db.users
     db_items = db.items
     db_transactions = db.transactions
