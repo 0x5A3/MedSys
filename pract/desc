@@ -1,0 +1,26 @@
+Q 1. 
+  Write a program to Insert a paragraph and 
+  count the number of words in a text file “LINES.TXT”.
+
+Q2. 
+  Write a menu driven program to implement the 
+  STACK operations PUSH, POP and VIEW.
+
+Q3. 
+  Create a table as shown below.
+
+Perform
+· View record/s
+· Add records
+· Delete record
+· Update record
+
+operations with reference to the below table through MYSQL-Python connectivity:-
+TABLE : SCHOOL
+
+RollNo Name   Class Gender City   Marks
+  1    Nanda  X       M    Agra    551
+  2    Sunil  XII     M    Mumbai  462
+  3    Jafer  XI      F    Delhi   400
+  4    Trisla XII     F    Mumbai  450
+  5    Steffi XII     M    Delhi   369

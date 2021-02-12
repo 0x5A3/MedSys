@@ -1,0 +1,232 @@
+imports
+    Used for mongodb database
+
+    MongoClient
+    json
+
+    Used for creating server to coordinate 
+    backend and frontend
+
+    http.server
+    webbrowser
+    
+    Misc functions used for various purposes
+
+    datetime
+    sys
+    platform
+    
+account.py
+    def page_profile(arg):
+
+base.js
+    Helper functions used across all UI components
+
+    Emulating JQuery's $ function for simplified DOM manipulation
+
+    const $ = name => {}
+
+
+    Used for retrieving value of input fields
+
+    const input_get = elem => {}
+    
+    
+    Used for navigating between internal pages
+
+    const goto = ref => {}
+
+
+    Helper function used to fetch/get data from server
+
+    const request = (method, url, data, respond) => {}
+    const user_upload = (method, data, update) => {}
+
+    const goto_account = () => {}
+    const exit = () => {}
+
+database.py
+    Functions used to store/retrieve data from 
+    main database/inventory
+
+
+    Item class handles state/quantity/descritpion of items present in store/cart
+
+    class Item:
+        def __init__(self, attr_dict):
+        def to_html(self, button, n, checkout, disabled=False):
+        def cart_add(self):
+        def cart_remove(self, n):
+        def checkout_remove(self, n):
+
+    Error message functions
+
+    def Result(success, reason):
+    def Error(reason):
+    def ServerError():
+    def Ok():
+
+
+    Functions used for opening/closing database 
+    and/or resetting all data
+    
+    def start():
+    def reset():
+    def quit():
+
+
+    Helper functions for validating fields during
+    registeration of new user
+
+    def username_checker(username, field_name):
+    def name_checker(name, field_name):
+    def email_checker(email, field_name):
+    def password_checker(password, field_name):
+    
+    def register(state):
+        def FieldError(msg, div_id):
+
+
+    Retrieve data of user
+
+    def get_user(username):
+    def get_names(username):
+
+
+    Validate user login data
+
+    def login(state):
+
+
+    Process search request and return items matching
+
+    def search(username, query):
+
+
+    Return list of items in cart
+
+    def checkout(username):
+
+
+    Update user's cart
+
+    def __cart_update(username, cart):
+    def cart_add(state):
+    def cart_remove(state):
+
+
+    Process purchase
+
+    def purchase(state):
+
+
+
+HTML.py
+    Helper functions used to generate HTML pages
+    for frontend user interface
+
+
+    Convert python dict to HTML property list
+    eg: { 'class': 'red' } => <div class="red">
+
+    def make_prop(prop):
+
+
+    Basic HTML node makers
+
+    def leaf(name, prop={}):
+    def node(name, inner=[], prop={}):
+    def div(inner, prop={}):
+    def span(inner, prop={}):
+
+
+    HTML input fields
+
+    def text_input(text, in_type="text", div_id="", style="", onkeydown="", value=""):
+    def button(text, onclick="", style=""):
+
+
+    UI element functions
+
+    def title(name):
+    def subtitle(name):
+    
+    def card(body, styleclass="card"):
+    def html_files(path_lst, node_type):
+    def page(title, body="", scripts=[], css=[]):
+
+login.js
+    const login = () => {}
+
+register.js
+    Verification methods
+
+    const not_match = (msg, exclude) => {}
+    const password_match = () => {}
+    const set_check = (node, fn) => {}
+    const register = () => {}
+
+server.py
+    HTTP Server class used to process POST & GET requests
+    from frontend UI
+
+    class RequestHandler(http.server.BaseHTTPRequestHandler):
+        Helper function to send generic response to User interface
+
+        def respond(self, code, fmt, data=None):
+
+
+        Generic endofunctor to unwrap, process & rewrap json data 
+            json => py dict => process (action) => py dict => json
+        
+        def json_apply(self, action):
+            def apply(data):
+        
+
+        Data transfer functions to and from user interface
+
+        def do_GET(self):
+        def do_POST(self):
+        def log_message(self, fmt, *args):
+
+    Functions to create base HTML pages
+
+    def page_login(arg):
+    def page_register(arg):
+    def page_error(code, msg):
+    def page_generic_error(arg):
+
+    def run_server(PORT=8040):
+
+store.js
+    Helper functions used to add/remove items from
+    users cart
+
+    const item_updater = (update, checkout) => () => {}
+    const check_quantity = elem => {}
+    const add_item_quantity = (elem, id, checkout) => {}
+    const add_item = (elem, id, checkout = false) => {}
+    const remove_item = (elem, id, checkout = false) => {}
+
+    const checkout_remove = (elem, id) => {}
+    const purchase = () => {}
+    const search = elem => {}
+
+
+    Functions used to navigate between internal pages
+
+    const goto_store = () => {}
+    const goto_checkout = () => {}
+
+store.py
+    def profile_icon(username, onclick="goto_account()"):
+
+    Helper functions used to generate subpages of store
+
+    def page_store(arg):
+    def page_checkout(arg):
+
+    Legacy function, intended for displaying cart history
+    but is deprecated
+
+    def page_history():

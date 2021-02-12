@@ -39,3 +39,6 @@ const user_upload = (method, data, update) =>
             else{ alert("Error: ", data.reason); }
         }
     );
+
+const goto_account = () => { goto(`/account/${username}`); };
+const exit = () => { goto('/login') };

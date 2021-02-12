@@ -46,7 +46,7 @@ for(const id in constrain_field){
 }
 
 
-let password_match = () => {
+const password_match = () => {
     if(input_get(password) === input_get(confirm)){
         confirm.childNodes[2].innerHTML = "";
     }
@@ -55,7 +55,7 @@ let password_match = () => {
     }
 }
 
-let set_check = (node, fn) =>
+const set_check = (node, fn) =>
     node.childNodes[1].oninput = () => {
         const [value, error] = fn(node.childNodes[1].value);
         node.childNodes[2].innerHTML = error;

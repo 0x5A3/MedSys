@@ -11,33 +11,183 @@ def start():
     client = MongoClient()
 
     db = client.online_pharmacy
+
     db_users = db.users
     db_items = db.items
     db_transactions = db.transactions
 
+def reset():
+    global db
+    global db_users
+    global db_items
+    global db_transactions
+
+    db_users.remove()
+    db_items.remove()
+    db_transactions.remove()
+
     db_users.insert_one({
-        "username": "a",
-        "password": "a",
-        "name_first": "Alex",
-        "name_first": "Anderson",
-        "email": "root@gmail.com",
+        "username": "guest",
+        "password": "password",
+        "name_first": "Guest",
+        "name_last": "Account",
+        "email": "guest@gmail.com",
         "cart": {}
     })
+
     db_items.insert_one({
-        "item_id": 32,
-        "name": "Patanjali hair OILE",
-        "desc": "Cures Cancer",
-        "price": 105,
-        "stock": 69
+        "item_id": 1,
+        "name": "Asprin",
+        "desc": """
+            Aspirin, also known as acetylsalicylic acid (ASA), 
+            is a medication used to reduce pain, fever, or 
+            inflammation. Specific inflammatory conditions 
+            which aspirin is used to treat include Kawasaki 
+            disease, pericarditis, and rheumatic fever. 
+            Aspirin given shortly after a heart attack 
+            decreases the risk of death. Aspirin is also used 
+            long-term to help prevent further heart attacks, 
+            ischaemic strokes, and blood clots in people at 
+            high risk. It may also decrease the risk of 
+            certain types of cancer, particularly colorectal 
+            cancer. For pain or fever, effects typically 
+            begin within 30 minutes. Aspirin is a 
+            nonsteroidal anti-inflammatory drug (NSAID) 
+            and works similarly to other NSAIDs but also 
+            suppresses the normal functioning of platelets.
+            within an hour.
+        """,
+        "price": 10.50,
+        "stock": 100
     })
     db_items.insert_one({
-        "item_id": 512000132,
+        "item_id": 2,
+        "name": "Cetirizine",
+        "desc": """
+            Cetirizine, sold under the brand name 
+            Zyrtec among others, is a second-generation 
+            antihistamine used to treat allergic rhinitis 
+            (hay fever), dermatitis, and urticaria. It 
+            is taken by mouth. Effects generally begin 
+            within an hour and last for about a day. 
+            The degree of benefit is similar to other
+            antihistamines such as diphenhydramine.
+        """,
+        "price": 20.50,
+        "stock": 40
+    })
+    db_items.insert_one({
+        "item_id": 3,
         "name": "Ibuprofen",
-        "desc": "RS-2-(4-(2-methylpropyl)phenyl)propanoic acid",
-        "price": 20,
-        "stock": 30
+        "desc": """
+            Ibuprofen is a medication in the nonsteroidal 
+            anti-inflammatory drug (NSAID) class that is 
+            used for treating pain, fever, and inflammation. 
+            This includes painful menstrual periods, 
+            migraines, and rheumatoid arthritis. It may 
+            also be used to close a patent ductus arteriosus
+            in a premature baby. It can be used by mouth 
+            or intravenously. It typically begins working 
+            within an hour.
+        """,
+        "price": 15.75,
+        "stock": 100
     })
 
+
+    db_items.insert_one({
+        "item_id": 4,
+        "name": "Lorazepam",
+        "desc": """
+            Lorazepam, sold under the brand name Ativan 
+            among others, is a benzodiazepine medication. 
+            It is used to treat anxiety disorders, trouble 
+            sleeping, active seizures including status 
+            epilepticus, alcohol withdrawal, and 
+            chemotherapy-induced nausea and vomiting. 
+            It is also used during surgery to interfere 
+            with memory formation and to sedate those 
+            who are being mechanically ventilated. While 
+            it can be used for severe agitation, 
+            midazolam is usually preferred. It is also 
+            used, along with other treatments, for acute 
+            coronary syndrome due to cocaine use. It 
+            can be given by mouth or as an injection 
+            into a muscle or vein. When given by 
+            injection onset of effects is between one 
+            and thirty minutes and effects last for up
+            to a day.         
+        """,
+        "price": 32.50,
+        "stock": 100
+    })
+
+    db_items.insert_one({
+        "item_id": 5,
+        "name": "Loperamide",
+        "desc": """
+            Loperamide, sold under the brand name Imodium, 
+            among others, is a medication used to decrease 
+            the frequency of diarrhea. It is often used 
+            for this purpose in inflammatory bowel disease 
+            and short bowel syndrome. It is not recommended 
+            for those with blood in the stool, mucus in the
+            stool or fevers. The medication is taken by mouth.[2] 
+        
+        """,
+        "price": 24.50,
+        "stock": 100
+    })
+    db_items.insert_one({
+        "item_id": 6,
+        "name": "Ranitidine",
+        "desc": """
+            Ranitidine, sold under the brand name 
+            Zantac among others, is a medication that
+            decreases stomach acid production. It is commonly 
+            used in treatment of peptic ulcer disease, 
+            gastroesophageal reflux disease, and 
+            Zollinger–Ellison syndrome. Tentative evidence 
+            shows it to be of benefit for hives. It can be 
+            given by mouth, injection into a muscle, or 
+            injection into a vein.
+        """,
+        "price": 25.50,
+        "stock": 20
+    })
+    db_items.insert_one({
+        "item_id": 7,
+        "name": "Paracetamol",
+        "desc": """
+            Paracetamol, also known as acetaminophen, is a 
+            medication used to treat pain and fever. It is 
+            typically used for mild to moderate pain relief.
+            Evidence is mixed for its use to relieve fever 
+            in children. It is often sold in combination 
+            with other medications, such as in many cold 
+            medications. Paracetamol is also used for severe 
+            pain, such as cancer pain and pain after surgery,
+            in combination with opioid pain medication. 
+            It is typically used either by mouth or rectally, 
+            but is also available by injection into a vein. 
+            Effects last between two and four hours.
+        """,
+        "price": 25.25,
+        "stock": 80
+    })
+    db_items.insert_one({
+        "item_id": 8,
+        "name": "Pseudoephedrine",
+        "desc": """
+            Pseudoephedrine (PSE) is a sympathomimetic drug 
+            of the phenethylamine and amphetamine chemical 
+            classes. It may be used as a nasal/sinus decongestant, 
+            as a stimulant, or as a wakefulness-promoting agent 
+            in higher doses.
+        """,
+        "price": 17.30,
+        "stock": 70
+    })
 
 def quit():
     pymongo.quit()
@@ -194,9 +344,13 @@ def register(state):
     db_users.insert_one(state)
     return Ok()
 
+def get_user(username):
+    user = db_users.find_one({"username": username})
+    return user
+
 
 def get_names(username):
-    user = db_users.find_one({"username": username})
+    user = get_user(username)
     return user["name_first"], user["name_last"]
 
 

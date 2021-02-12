@@ -1,7 +1,7 @@
 import HTML
 import database as DB
 
-def profile_icon(username, onclick="goto('account')"):
+def profile_icon(username, onclick="goto_account()"):
     first_name, last_name = DB.get_names(username)
     profile = f"{first_name[0]}{last_name[0]}"
     return HTML.button(profile, onclick=onclick, style="button profile")
