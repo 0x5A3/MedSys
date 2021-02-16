@@ -6,6 +6,7 @@ const $ = name => {
 };
 const input_get = elem => elem.childNodes[1].value;
 
+
 const goto = ref => { window.location.href = ref; };
 
 const request = (method, url, data, respond) => {

@@ -4,10 +4,8 @@ import webbrowser
 import http.server
 import HTML
 import json
-import server
 import store
 import account
-
 
 def page_login(arg):
     return HTML.page("MedSys Login", [
